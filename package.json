@@ -1,0 +1,9 @@
+{
+  "name": "Synker",
+  "version": "0.1.1",
+  "depedencies": {},
+  "dependencies": {
+    "express": "~4.10.1",
+    "mysql": "~2.5.2"
+  }
+}
