@@ -23,6 +23,12 @@ app.get('/',function(req,res){
         res.render('index.html');
 });
 
+app.get('/get_from_db',function(req,res){
+        connection.query("SELECT * from content",function(err,rows){
+          res.json(rows[0]);
+        });
+});
+
 app.get('/ping',function(req,res){
         res.json({"alive":"yes"});
 });
