@@ -7,10 +7,10 @@ var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : '',
-  database : 'address_book'
+  database : 'synker'
 });
 
-//connection.connect();
+connection.connect();
 
 
 app.set('views',__dirname + '/view');
@@ -25,6 +25,43 @@ app.get('/',function(req,res){
 
 app.get('/ping',function(req,res){
         res.json({"alive":"yes"});
+});
+
+app.get('/update',function(req,res){
+        var content=req.query.data;
+        /*Check if there is any row else put one row for all time*/
+        connection.query("SELECT * from content",function(err,rows,field){
+            if(rows.length===0)
+              {
+                /*add one row*/
+                connection.query("INSERT into content(user_id,content) VALUES (1,'')",function(err,rows){
+                    if(err)
+                      {
+                        console.log(err);
+                        res.json({"error":"1"});
+                      }
+                      else
+                        {
+                          res.json({"yes":"1"});
+                        }
+                });
+              }
+            else
+              {
+                /*Sync exisiting data*/
+                connection.query("UPDATE content set content='"+content+"' where user_id=1",function(err,rows){
+                    if(err)
+                      {
+                        console.log(err);
+                        res.json({"error":"1"});
+                      }
+                    else
+                      {
+                        res.json({"yes":"1"});
+                      }
+                });
+              }
+        });
 });
 
 app.listen(3000,function(){

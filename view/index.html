@@ -11,33 +11,53 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script type="text/javascript">
           var request = indexedDB.open("synker");
+          var db;
           request.onupgradeneeded = function() {
           // The database did not previously exist, so create object stores and indexes.
-          var db = request.result;
-          var store = db.createObjectStore("notes", {keyPath: "time"});
+          db = request.result;
+          var store = db.createObjectStore("notes", {keyPath: "ID"});
           var ourindex = store.createIndex("content","user_content");
-
-          // Populate with initial data.
-          store.put({content: "Hola ! whatsup", time:Date.now()});
         };
 
         request.onsuccess = function() {
           db = request.result;
         };
+
+        function addData(data)
+        {
+            var tx = db.transaction("notes", "readwrite");
+            var store = tx.objectStore("notes");
+            store.put({content: data, ID:1});
+        }
+        function addinsql(data)
+        {
+          $.get("/update?data="+data,function(data){
+            if(data.yes==1)
+              {
+                alert("data updated");
+              }
+            else
+              {
+                alert("error");
+              }
+          });
+        }
   </script>
   <script>
   $(document).ready(function(){
 
         $("#save").click(function(){
-
+          var content=$("#my_container").val();
           $.ajax({
                   url: '/ping',
                   type: 'GET',
                   success: function(data){
                       console.log("Put data in Mysql");
+                      addinsql(content);
                   },
                   error: function(data) {
-                      console.log("Put in MySQL.");
+                      console.log("Putting in indexDB.");
+                      addData(content);
                   }
           });
 
