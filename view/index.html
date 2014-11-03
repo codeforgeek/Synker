@@ -4,7 +4,29 @@
   </head>
   <body>
     <div id="container">
-      <input type="textarea" rows="20" cols="20"><br>      
+      <textarea rows="20" cols="120" id="my_container"></textarea><br><br>
+      <input type="button" id="save" value="Save"></input>
     </div>
   </body>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script>
+  $(document).ready(function(){
+
+        $("#save").click(function(){
+
+          $.ajax({
+                  url: '/ping',
+                  type: 'GET',
+                  success: function(data){
+                      console.log("Connected");
+                  },
+                  error: function(data) {
+                      console.log("Not Connected");
+                  }
+          });
+
+        });
+
+  });
+  </script>
 </html>
